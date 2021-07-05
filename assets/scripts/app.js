@@ -1,19 +1,31 @@
+class Product {
+  title = 'DEFAULT';
+  imageUrl;
+  description;
+  price;
+
+  constructor(title, image, desc, price) {
+    this.title = title;
+    this.imageUrl = image;
+    this.description = desc;
+    this.price = price;
+  }
+}
+
 const productList = {
   products: [
-    {
-      title: 'A pillow',
-      imageUrl:
-        'https://bedzzzexpress.com/uploads/products/Hero_Awakens_Adapt_ProLo-Cooling_Pillow_3965_5x7_7_17_2018_1_33_23_PM.jpg',
-      price: 19.99,
-      description: 'A soft pillow!',
-    },
-    {
-      title: 'A carpet',
-      imageUrl:
-        'https://www.eymockup.com/wp-content/uploads/2020/11/Home-Carpet-Design-Mockup-3-1500x1500.jpg',
-      price: 89.99,
-      description: 'A delightful carpet!',
-    },
+    new Product(
+      'A pillow',
+      'https://bedzzzexpress.com/uploads/products/Hero_Awakens_Adapt_ProLo-Cooling_Pillow_3965_5x7_7_17_2018_1_33_23_PM.jpg',
+      'A soft pillow!',
+      19.99
+    ),
+    new Product(
+      'A carpet',
+      'https://www.eymockup.com/wp-content/uploads/2020/11/Home-Carpet-Design-Mockup-3-1500x1500.jpg',
+      'A delightful carpet!',
+      89.99
+    ),
   ],
   render() {
     const renderHook = document.getElementById('app');
