@@ -20,9 +20,14 @@ class ElementAttribute {
 }
 
 class Component {
-  constructor(renderHookId) {
+  constructor(renderHookId, shouldRender = true) {
     this.hookId = renderHookId;
+    if (shouldRender) {
+      this.render();
+    }
   }
+
+  render() {}
 
   createRootElement(tag, cssClasses, attributes) {
     const rootElement = document.createElement(tag);
@@ -79,8 +84,9 @@ class ShoppingCart extends Component {
 
 class ProductItem extends Component {
   constructor(product, renderHookId) {
-    super(renderHookId);
+    super(renderHookId, false);
     this.product = product;
+    this.render();
   }
 
   addToCart() {
@@ -106,42 +112,65 @@ class ProductItem extends Component {
 }
 
 class ProductList extends Component {
-  products = [
-    new Product(
-      'A pillow',
-      'https://bedzzzexpress.com/uploads/products/Hero_Awakens_Adapt_ProLo-Cooling_Pillow_3965_5x7_7_17_2018_1_33_23_PM.jpg',
-      'A soft pillow!',
-      19.99
-    ),
-    new Product(
-      'A carpet',
-      'https://www.eymockup.com/wp-content/uploads/2020/11/Home-Carpet-Design-Mockup-3-1500x1500.jpg',
-      'A delightful carpet!',
-      89.99
-    ),
-  ];
+  products = [];
 
   constructor(renderHookId) {
     super(renderHookId);
+    this.fetchProducts();
   }
+
+  fetchProducts() {
+    this.products = [
+      new Product(
+        'A pillow',
+        'https://bedzzzexpress.com/uploads/products/Hero_Awakens_Adapt_ProLo-Cooling_Pillow_3965_5x7_7_17_2018_1_33_23_PM.jpg',
+        'A soft pillow!',
+        19.99
+      ),
+      new Product(
+        'A carpet',
+        'https://www.eymockup.com/wp-content/uploads/2020/11/Home-Carpet-Design-Mockup-3-1500x1500.jpg',
+        'A delightful carpet!',
+        89.99
+      ),
+    ];
+    this.renderProducts();
+  }
+
+  renderProducts() {
+    for (const prod of this.products) {
+      new ProductItem(prod, 'prod-list');
+    }
+  }
+
+  // ****************************************************************
+  // 'new' makes sure a new object is created, and that 'this' inside
+  // of the constrctor is set to that object. So it DOES NOT refer to
+  // the base class, in this case the Component class. In other words,
+  // when the new object is created, 'this' will refer to the object
+  // created by the subclass, not the parent. Therefore, this.render()
+  // in the parent class will refer to the render() method of the
+  // sub-class.
+  // ****************************************************************
 
   render() {
     this.createRootElement('ul', 'product-list', [
       new ElementAttribute('id', 'prod-list'),
     ]);
-    for (const prod of this.products) {
-      const productItem = new ProductItem(prod, 'prod-list');
-      productItem.render();
+    if (this.products && this.products.length > 0) {
+      this.renderProducts();
     }
   }
 }
 
 class Shop {
+  constructor() {
+    this.render();
+  }
+
   render() {
     this.cart = new ShoppingCart('app');
-    this.cart.render();
-    const productList = new ProductList('app');
-    productList.render();
+    new ProductList('app');
   }
 }
 
@@ -150,7 +179,6 @@ class App {
 
   static init() {
     const shop = new Shop();
-    shop.render();
     this.cart = shop.cart;
   }
 
